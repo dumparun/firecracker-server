@@ -1,0 +1,12 @@
+
+#!/bin/bash
+
+echo "Smushing Images, Please wait ";
+java -jar smushit.jar -imageDir=/var/www/resources/images/ -verbose=true -dryRun=false -imgExtensions=gif,png,jpeg,jpg
+java -jar smushit.jar -imageDir=/var/www/resources/productimages/ -verbose=true -dryRun=false -imgExtensions=gif,png,jpeg,jpg
+java -jar smushit.jar -imageDir=/var/www/resources/brandimages/ -verbose=true -dryRun=false -imgExtensions=gif,png,jpeg,jpg
+java -jar smushit.jar -imageDir=/var/www/resources/advertisement/ -verbose=true -dryRun=false -imgExtensions=gif,png,jpeg,jpg
+
+java -jar smushit.jar -imageDir=/var/www/customer/web/themes/default/css/images/ -verbose=true -dryRun=false -imgExtensions=gif,png,jpeg,jpg
+java -jar smushit.jar -imageDir=/var/www/vendor/web/themes/default/css/images/ -verbose=true -dryRun=false -imgExtensions=gif,png,jpe,jpg
+java -jar smushit.jar -imageDir=/var/www/admin/web/themes/default/css/images/ -verbose=true -dryRun=false -imgExtensions=gif,png,jpeg,jpg

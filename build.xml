@@ -1,0 +1,24 @@
+<project name="BuildMantra"  basedir=".">
+    <description>
+        Build Mantra Build File
+    </description>
+  <!-- set global properties for this build -->
+  <property name="basedirectory" location="C:/Users//git/bm"/>
+  <property name="system" location="codeigniter"/>
+  <property name="src" location="web"/>
+  <property name="vendorbuild" location="${basedirectory}/vendor"/>
+  <property name="adminbuild" location="${basedirectory}/admin"/>
+
+ <!--  <target name="init">
+    Create the time stamp
+    <tstamp/> -->
+    <!-- Create the build directory structure used by compile -->
+    <mkdir dir="${vendorbuild}"/>
+    <mkdir dir="${adminbuild}"/>
+  <!-- </target> -->
+
+  <!-- <target name="compile" depends="init"
+        description="compile the source " > -->
+	<copy file="index.php" todir="${vendorbuild}"/>
+  <!-- </target> -->
+</project>
