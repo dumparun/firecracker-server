@@ -1,13 +1,10 @@
 <?php
-
 /**
- * @author Maganiva
+ * @author Arun
  *
  */
 class ResponseStatus extends Entity {
-
 	public $code;
-
 	public $message;
 	
 	/*
@@ -15,13 +12,10 @@ class ResponseStatus extends Entity {
 	 */
 	
 	public function __construct($code = null, $message = null) {
-
 		parent::__construct ();
-
 		$this->code = $code;
 		
 		$this->message = $message;
 	
 	}
-
 }
