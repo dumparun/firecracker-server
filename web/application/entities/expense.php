@@ -8,7 +8,7 @@ class ExpenseEntity extends Entity {
 
 	public $expense_seq_no;
 
-	public $date;
+	public $expensedate;
 
 	public $description;
 

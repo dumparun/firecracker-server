@@ -48,7 +48,7 @@ class Expense_Service extends Service {
 		);
 		
 		$expense = new ExpenseEntity ();
-		$expense->date = $date;
+		$expense->expensedate = $date;
 		$expense->description = $description;
 		$expense->category = array_search ( $category, $allCategory );
 		$expense->paymentType = array_search ( $paymentType, $allPaymentType );
@@ -61,13 +61,46 @@ class Expense_Service extends Service {
 
 	public function getExpense($date, $month, $year) {
 
+		$allMonths = array (
+				'01' => 'January',
+				'02' => 'February',
+				'03' => 'March',
+				'04' => 'April',
+				'05' => 'May',
+				'06' => 'June',
+				'07' => 'July',
+				'08' => 'August',
+				'09' => 'September',
+				'10' => 'October',
+				'11' => 'November',
+				'12' => 'December'
+		);
 		$expense = new ExpenseEntity ();
+		$month = 'August';
 		if ($date != null) {
 			//extract only yyyy-mm-dd
 			$date = substr($date, 0, 10);
 			$res = $this->expense_model->getDailyExpense ( $date );
+		}else if($month != null && $year != null){
+			$fromDate = $year.'-'.array_search ( $month, $allMonths ).'-01';
+			$toDate = $year.'-'.array_search ( $month, $allMonths ).'-31';
+			$res = $this->expense_model->getMonthlyExpense ( $fromDate, $toDate );
+		}else if($month != null){
+			$fromDate = '2015-'.array_search ( $month, $allMonths ).'-01';
+			$toDate = '2015-'.array_search ( $month, $allMonths ).'-31';
+			$res = $this->expense_model->getMonthlyExpense ( $fromDate, $toDate);
+		}else{
+			//extract only yyyy-mm-dd
+			$date = date("y-m-d");
+			$date = "20".$date;
+			$res = $this->expense_model->getDailyExpense ( $date );
 		}
-		return $res;
+		$index = 0;
+		foreach($res as $value){
+			$finalList[$value->expensedate][$index++] = ($value);
+		}
+		
+		return $finalList;
 	}
 
 }
