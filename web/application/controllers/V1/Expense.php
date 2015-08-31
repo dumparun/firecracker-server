@@ -65,4 +65,9 @@ class Expense extends REST_Controller {
 	
 	}
 
+	function uploadExcel_get(){
+		die;
+		$this->expense_service->uploadExcel();
+		
+	}
 }

@@ -7,6 +7,8 @@
 
 require APPPATH . '/entities/expense.php';
 
+require_once BASE_APPPATH . 'third_party/PHPExcel/PHPExcel.php';
+
 class Expense_Service extends Service {
 
 	function __construct() {
@@ -73,34 +75,75 @@ class Expense_Service extends Service {
 				'09' => 'September',
 				'10' => 'October',
 				'11' => 'November',
-				'12' => 'December'
+				'12' => 'December' 
 		);
 		$expense = new ExpenseEntity ();
 		$month = 'August';
 		if ($date != null) {
-			//extract only yyyy-mm-dd
-			$date = substr($date, 0, 10);
+			// extract only yyyy-mm-dd
+			$date = substr ( $date, 0, 10 );
 			$res = $this->expense_model->getDailyExpense ( $date );
-		}else if($month != null && $year != null){
-			$fromDate = $year.'-'.array_search ( $month, $allMonths ).'-01';
-			$toDate = $year.'-'.array_search ( $month, $allMonths ).'-31';
+		} else if ($month != null && $year != null) {
+			$fromDate = $year . '-' . array_search ( $month, $allMonths ) . '-01';
+			$toDate = $year . '-' . array_search ( $month, $allMonths ) . '-31';
 			$res = $this->expense_model->getMonthlyExpense ( $fromDate, $toDate );
-		}else if($month != null){
-			$fromDate = '2015-'.array_search ( $month, $allMonths ).'-01';
-			$toDate = '2015-'.array_search ( $month, $allMonths ).'-31';
-			$res = $this->expense_model->getMonthlyExpense ( $fromDate, $toDate);
-		}else{
-			//extract only yyyy-mm-dd
-			$date = date("y-m-d");
-			$date = "20".$date;
+		} else if ($month != null) {
+			$fromDate = '2015-' . array_search ( $month, $allMonths ) . '-01';
+			$toDate = '2015-' . array_search ( $month, $allMonths ) . '-31';
+			$res = $this->expense_model->getMonthlyExpense ( $fromDate, $toDate );
+		} else {
+			// extract only yyyy-mm-dd
+			$date = date ( "y-m-d" );
+			$date = "20" . $date;
 			$res = $this->expense_model->getDailyExpense ( $date );
 		}
 		$index = 0;
-		foreach($res as $value){
-			$finalList[$value->expensedate][$index++] = ($value);
+		foreach ( $res as $value ) {
+			$finalList [$value->expensedate] [$index ++] = ($value);
 		}
 		
 		return $finalList;
+	
+	}
+
+	public function uploadExcel() {
+
+		$fileName = BASE_APPPATH . '../resources/excel.xlsx';
+		
+		$inputFileType = PHPExcel_IOFactory::identify ( $fileName );
+		$objReader = PHPExcel_IOFactory::createReader ( $inputFileType );
+		$objPHPExcel = $objReader->load ( $fileName );
+		
+		$rowIterator = $objPHPExcel->getActiveSheet ()
+			->getRowIterator ();
+		$array_data = array ();
+		foreach ( $rowIterator as $row ) {
+			$cellIterator = $row->getCellIterator ();
+			$cellIterator->setIterateOnlyExistingCells ( false );
+			$rowIndex = $row->getRowIndex ();
+			$array_data [$rowIndex] = array ();
+			
+			foreach ( $cellIterator as $cell ) {
+				$array_data [$rowIndex] [$cell->getColumn ()] = $cell->getCalculatedValue ();
+			}
+		}
+		$i = 0;
+		
+		foreach ( $array_data as $eachRow ) {
+			
+			if ($eachRow ['B'] === null || $eachRow ['B'] === '') {
+				continue;
+			}
+			
+			$date = '2015-08-' . $eachRow ['A'];
+			$description = $eachRow ['B'];
+			$category = $eachRow ['C'];
+			$paymentType = $eachRow ['D'];
+			$amount = abs($eachRow ['E']);
+		
+			$data = $this->submitDailyExpense($date, $description, $category, $paymentType, $amount);
+		}
+	
 	}
 
 }
