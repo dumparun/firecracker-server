@@ -13,7 +13,7 @@ class Expense_Service extends Service {
 
 		parent::__construct ();
 		
-		$this->load->model ( 'Expense_model' );
+		$this->load->model ( 'expense_model' );
 	
 	}
 
@@ -47,16 +47,27 @@ class Expense_Service extends Service {
 				'6' => 'CapitalOne' 
 		);
 		
-		$expense = new ExpenseEntity();
+		$expense = new ExpenseEntity ();
 		$expense->date = $date;
 		$expense->description = $description;
 		$expense->category = array_search ( $category, $allCategory );
 		$expense->paymentType = array_search ( $paymentType, $allPaymentType );
 		$expense->amount = $amount;
-		$status = $this->Expense_model->submitDailyExpense ( $expense );
+		$status = $this->expense_model->submitDailyExpense ( $expense );
 		
 		return $status;
 	
+	}
+
+	public function getExpense($date, $month, $year) {
+
+		$expense = new ExpenseEntity ();
+		if ($date != null) {
+			//extract only yyyy-mm-dd
+			$date = substr($date, 0, 10);
+			$res = $this->expense_model->getDailyExpense ( $date );
+		}
+		return $res;
 	}
 
 }
