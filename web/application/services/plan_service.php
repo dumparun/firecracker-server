@@ -42,7 +42,13 @@ class Plan_Service extends Service {
 		
 		
 		$res = $this->plan_model->getPlanView ();
-		$currentExpense = $this->expense_model->getExpenseOnCategory ();
+		$currentMonth = date('m');
+		$currentYear = date('Y');
+		
+		$fromDate = $currentYear . '-' . $currentMonth . '-01';
+		$toDate = $currentYear . '-' . $currentMonth . '-31'; 
+		
+		$currentExpense = $this->expense_model->getExpenseOnCategory ($fromDate, $toDate);
 		
 		$index = 0;
 		foreach ( $res as $value ) {

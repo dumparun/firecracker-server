@@ -50,9 +50,9 @@ class Expense_Model extends MY_Model {
 	
 	}
 
-	public function getExpenseOnCategory() {
+	public function getExpenseOnCategory($fromDate, $toDate) {
 
-		$this->_database->select ( " category, SUM(amount) amt FROM `dailyexpense` GROUP BY category" );
+		$this->_database->select ( " category, SUM(amount) amt FROM `dailyexpense` WHERE `expensedate` > \"".$fromDate. "\" AND `expensedate` < \"".$toDate."\" GROUP BY `category`" );
 		
 		return $this->_database->get ()
 			->result ();

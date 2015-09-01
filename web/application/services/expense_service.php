@@ -88,8 +88,9 @@ class Expense_Service extends Service {
 			$toDate = $year . '-' . array_search ( $month, $allMonths ) . '-31';
 			$res = $this->expense_model->getMonthlyExpense ( $fromDate, $toDate );
 		} else if ($month != null) {
-			$fromDate = '2015-' . array_search ( $month, $allMonths ) . '-01';
-			$toDate = '2015-' . array_search ( $month, $allMonths ) . '-31';
+			$currentYear = date('Y');
+			$fromDate = $currentYear.'-' . array_search ( $month, $allMonths ) . '-01';
+			$toDate = $currentYear.'-' . array_search ( $month, $allMonths ) . '-31';
 			$res = $this->expense_model->getMonthlyExpense ( $fromDate, $toDate );
 		} else {
 			// extract only yyyy-mm-dd
