@@ -18,7 +18,8 @@ class Expense extends REST_Controller {
 		parent::__construct ();
 		
 		$this->load->service ( "expense_service" );
-	
+		
+		$this->load->service ( "plan_service" );
 	}
 
 	function submitDailyExpense_post() {
@@ -61,6 +62,25 @@ class Expense extends REST_Controller {
 		$response->status = $status;
 		$response->listOfExpenses = $expenses;
 		
+		$this->response ( $response );
+	
+	}
+	
+	function getPlanView_post() {
+	
+		$planview = $this->plan_service->getPlanView ( );
+		
+		$response = new ExpenseList ( false );
+	
+		if (sizeof($planview) > 0)
+			$status = new ResponseStatus ( 0, "Plan Retrieved" );
+		else
+			$status = new ResponseStatus ( 103, "Too Bad, when its already bad" );
+	
+		$response->status = $status;
+		
+		$response->listOfExpenses = $planview;
+	
 		$this->response ( $response );
 	
 	}

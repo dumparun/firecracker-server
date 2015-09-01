@@ -36,13 +36,23 @@ class Expense_Model extends MY_Model {
 	}
 
 	public function getDailyExpense($date) {
+
 		return parent::get_many_by ( "expensedate", $date );
 	
 	}
 
 	public function getMonthlyExpense($fromDate, $toDate) {
 
-		$this->_database->select ( " * FROM `dailyexpense` WHERE `expensedate` <= \"" . $toDate . "\" AND `expensedate` >= \"" . $fromDate . "\" ORDER BY `expensedate` ASC ", false);
+		$this->_database->select ( " * FROM `dailyexpense` WHERE `expensedate` <= \"" . $toDate . "\" AND `expensedate` >= \"" . $fromDate . "\" ORDER BY `expensedate` ASC ", false );
+		
+		return $this->_database->get ()
+			->result ();
+	
+	}
+
+	public function getExpenseOnCategory() {
+
+		$this->_database->select ( " category, SUM(amount) amt FROM `dailyexpense` GROUP BY category" );
 		
 		return $this->_database->get ()
 			->result ();
