@@ -19,6 +19,7 @@ class Plan_Service extends Service {
 	}
 
 	public function getPlanView() {
+		
 
 		$allCategory = array (
 				'1' => 'Credit Cards',
@@ -39,26 +40,29 @@ class Plan_Service extends Service {
 				'16' => 'Travelling Expense'
 		);
 		
+		
 		$res = $this->plan_model->getPlanView ();
-		$currentExpense = $this->expense_model->getExpenseOnCategory();
+		$currentExpense = $this->expense_model->getExpenseOnCategory ();
 		
 		$index = 0;
 		foreach ( $res as $value ) {
-			$newList = new PlanViewList();
+			$newList = new PlanViewList ();
 			$newList->category = $value->category;
 			$newList->plannedAmount = $value->amount;
+			$newList->expenditure = 0;
 			
-			$key = array_search($value->category, $allCategory);
-			
-			if(array_key_exists($key, $currentExpense))
-				$newList->expenditure = $currentExpense[$key]->amt;
-			else 
-				$newList->expenditure = 0;
+			foreach ( $currentExpense as $cat ) {
+				$key = array_keys($allCategory, $value->category);
+				if ($cat->category == $key[0]) {
+					$newList->expenditure = $cat->amt;
+					break;
+				}
+			}
 			
 			$finalList [$value->category] = $newList;
 		}
 		return $finalList;
-
+	
 	}
 
 }
