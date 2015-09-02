@@ -49,7 +49,7 @@ class Plan_Service extends Service {
 	
 	}
 
-	public function getPlanView($past = false) {
+	public function getPlanView($past = 'false') {
 		
 		// $past is used to pick last months expenditure.
 		
@@ -73,17 +73,16 @@ class Plan_Service extends Service {
 		);
 		
 		$res = $this->plan_model->getPlanView ();
-		$currentMonth = date ( 'm' ) - 1;
+		$currentMonth = date ( 'm' );
 		$currentYear = date ( 'Y' );
 		
-		if ($past) {
+		if ($past == 'true') {
 			$currentMonth = date ( 'm' ) - 1;
 			$creditCardExpense = $this->getLastMonthCreditCardExpense ();
 		}
 		
 		$fromDate = $currentYear . '-' . $currentMonth . '-01';
 		$toDate = $currentYear . '-' . $currentMonth . '-31';
-		
 		$currentExpense = $this->expense_model->getExpenseOnCategory ( $fromDate, $toDate );
 		
 		$index = 0;
