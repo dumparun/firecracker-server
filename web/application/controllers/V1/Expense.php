@@ -11,6 +11,8 @@ require APPPATH . '/entities/expense_response.php';
 
 require APPPATH . '/entities/expense_list.php';
 
+require_once APPPATH . '/entities/income.php';
+
 class Expense extends REST_Controller {
 
 	function __construct() {
@@ -20,6 +22,9 @@ class Expense extends REST_Controller {
 		$this->load->service ( "expense_service" );
 		
 		$this->load->service ( "plan_service" );
+		
+		$this->load->service ( "income_service" );
+	
 	}
 
 	function submitDailyExpense_post() {
@@ -54,7 +59,7 @@ class Expense extends REST_Controller {
 		
 		$response = new ExpenseList ( false );
 		
-		if (sizeof($expenses) > 0)
+		if (sizeof ( $expenses ) > 0)
 			$status = new ResponseStatus ( 0, "Recieved All Expenses" );
 		else
 			$status = new ResponseStatus ( 102, "We were not able to retrieve expenses, please try again" );
@@ -65,29 +70,63 @@ class Expense extends REST_Controller {
 		$this->response ( $response );
 	
 	}
-	
+
 	function getPlanView_post() {
-	
-		$planview = $this->plan_service->getPlanView ( );
+
+		$planview = $this->plan_service->getPlanView ();
 		
 		$response = new ExpenseList ( false );
-	
-		if (sizeof($planview) > 0)
+		
+		if (sizeof ( $planview ) > 0)
 			$status = new ResponseStatus ( 0, "Plan Retrieved" );
 		else
 			$status = new ResponseStatus ( 103, "Too Bad, when its already bad" );
-	
+		
 		$response->status = $status;
 		
 		$response->listOfExpenses = $planview;
-	
+		
 		$this->response ( $response );
 	
 	}
 
-	function uploadExcel_get(){
-		die;
-		$this->expense_service->uploadExcel();
+	function insertIncome_post() {
+
+		$salary = $this->post ( 'salary' );
+		$otherIncome = $this->post ( 'otherofficeincome' );
+		$others = $this->post ( 'others' );
 		
+		$status = $this->income_service->insertIncome ( $salary, $otherIncome, $others );
+		
+		$response = new ExpenseResponse ( false );
+		
+		if ($status > 0)
+			$status = new ResponseStatus ( 0, "Income was submitted succesfully" );
+		else
+			$status = new ResponseStatus ( 101, "Income was not submitted, please try again" );
+		
+		$response->status = $status;
+		
+		$this->response ( $response );
+	
 	}
+
+	function getIncome_post() {
+
+		$res = $this->income_service->getIncome ();
+		$response = new ExpenseResponse ( false );
+		
+		$response->status = new ResponseStatus ( 0, "Recieved Income" );
+		$response->listOfExpenses = $res;
+		$this->response ( $response );
+	
+	}
+
+	function uploadExcel_get() {
+
+		die ();
+		$this->expense_service->uploadExcel ();
+	
+	}
+
 }
