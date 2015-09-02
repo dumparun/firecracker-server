@@ -16,6 +16,7 @@ class Income_Model extends MY_Model {
 	
 	}
 
+
 	public function getIncome() {
 
 		return parent::get (1);

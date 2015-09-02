@@ -22,4 +22,18 @@ class Plan_Model extends MY_Model {
 	
 	}
 
+	public function updatePlan($seq, $category, $amount) {
+
+		$data = array (
+				
+				'category' => $category,
+				
+				'amount' => $amount 
+		)
+		;
+		
+		return parent::update ( $seq, $data );
+	
+	}
+
 }

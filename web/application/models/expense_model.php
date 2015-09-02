@@ -34,6 +34,14 @@ class Expense_Model extends MY_Model {
 		return parent::insert ( $data, false );
 	
 	}
+	
+	public function getCreditCardHistory($itemKey, $fromDate, $toDate){
+		
+		$this->_database->select ( " SUM(amount) amt FROM `dailyexpense` WHERE  paymenttype = ".$itemKey ." AND (`expensedate` > \"".$fromDate. "\" AND `expensedate` < \"".$toDate."\" )");
+		
+		return $this->_database->get ()
+		->result ();
+	}
 
 	public function getDailyExpense($date) {
 

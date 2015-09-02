@@ -73,7 +73,9 @@ class Expense extends REST_Controller {
 
 	function getPlanView_post() {
 
-		$planview = $this->plan_service->getPlanView ();
+		$past = $this->post('past');
+		
+		$planview = $this->plan_service->getPlanView ($past);
 		
 		$response = new ExpenseList ( false );
 		
@@ -85,6 +87,22 @@ class Expense extends REST_Controller {
 		$response->status = $status;
 		
 		$response->listOfExpenses = $planview;
+		
+		$this->response ( $response );
+	
+	}
+
+	function updatePlan_post() {
+
+		$plan = $this->post ( "planList" );
+		
+		$this->plan_service->updatePlan ( $plan );
+		
+		$response = new ExpenseResponse ( false );
+		
+		$status = new ResponseStatus ( 0, "Plan was submitted succesfully" );
+		
+		$response->status = $status;
 		
 		$this->response ( $response );
 	
@@ -124,7 +142,6 @@ class Expense extends REST_Controller {
 
 	function uploadExcel_get() {
 
-		die ();
 		$this->expense_service->uploadExcel ();
 	
 	}
