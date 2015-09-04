@@ -95,7 +95,7 @@ class Plan_Service extends Service {
 			foreach ( $currentExpense as $cat ) {
 				$key = array_keys ( $allCategory, $value->category );
 				if ($cat->category == $key [0]) {
-					if ($past && $key [0] == '1') {
+					if ($past == 'true' && $key [0] == '1') {
 						$newList->expenditure = $creditCardExpense;
 					} else {
 						$newList->expenditure = $cat->amt;

@@ -13,6 +13,8 @@ require APPPATH . '/entities/expense_list.php';
 
 require_once APPPATH . '/entities/income.php';
 
+require_once APPPATH . '/entities/reminder.php';
+
 class Expense extends REST_Controller {
 
 	function __construct() {
@@ -24,6 +26,8 @@ class Expense extends REST_Controller {
 		$this->load->service ( "plan_service" );
 		
 		$this->load->service ( "income_service" );
+		
+		$this->load->service ( "reminder_service" );
 	
 	}
 
@@ -56,7 +60,6 @@ class Expense extends REST_Controller {
 		$month = $this->post ( 'month' );
 		$year = $this->post ( 'year' );
 		$expenses = $this->expense_service->getExpense ( $date, $month, $year );
-		
 		$response = new ExpenseList ( false );
 		
 		if (sizeof ( $expenses ) > 0)
@@ -73,9 +76,9 @@ class Expense extends REST_Controller {
 
 	function getPlanView_post() {
 
-		$past = $this->post('past');
+		$past = $this->post ( 'past' );
 		
-		$planview = $this->plan_service->getPlanView ($past);
+		$planview = $this->plan_service->getPlanView ( $past );
 		
 		$response = new ExpenseList ( false );
 		
@@ -136,6 +139,49 @@ class Expense extends REST_Controller {
 		
 		$response->status = new ResponseStatus ( 0, "Recieved Income" );
 		$response->listOfExpenses = $res;
+		$this->response ( $response );
+	
+	}
+
+	function updateReminder_post() {
+
+		
+	}
+	
+	function addReminder_post() {
+	
+		$reminder = new Reminder();
+		$reminder->item = $this->post ('item');
+		$reminder->reminder = $this->post ('reminder');
+		
+		$status = $this->reminder_service->addReminder ($reminder);
+		$response = new ExpenseResponse ( false );
+		
+		if ($status > 0)
+			$status = new ResponseStatus ( 0, "Reminder was submitted succesfully" );
+		else
+			$status = new ResponseStatus ( 109, "Reminder was not submitted, please try again" );
+		
+		$response->status = $status;
+		
+		$this->response ( $response );
+	}
+
+	function getReminder_post() {
+
+		$reminder = $this->reminder_service->getReminder ();
+		
+		$response = new ExpenseList ( false );
+		
+		if (sizeof ( $reminder ) > 0)
+			$status = new ResponseStatus ( 0, "Reminders Retrieved" );
+		else
+			$status = new ResponseStatus ( 103, "Too Bad, when its already bad" );
+		
+		$response->status = $status;
+		
+		$response->listOfExpenses = $reminder;
+		
 		$this->response ( $response );
 	
 	}

@@ -78,16 +78,15 @@ class Expense_Service extends Service {
 				'12' => 'December' 
 		);
 		$expense = new ExpenseEntity ();
-		$month = 'August';
-		if ($date != null) {
+		if ($date != false) {
 			// extract only yyyy-mm-dd
 			$date = substr ( $date, 0, 10 );
 			$res = $this->expense_model->getDailyExpense ( $date );
-		} else if ($month != null && $year != null) {
+		} else if ($month != false && $year != false) {
 			$fromDate = $year . '-' . array_search ( $month, $allMonths ) . '-01';
 			$toDate = $year . '-' . array_search ( $month, $allMonths ) . '-31';
 			$res = $this->expense_model->getMonthlyExpense ( $fromDate, $toDate );
-		} else if ($month != null) {
+		} else if ($month != false) {
 			$currentYear = date('Y');
 			$fromDate = $currentYear.'-' . array_search ( $month, $allMonths ) . '-01';
 			$toDate = $currentYear.'-' . array_search ( $month, $allMonths ) . '-31';
@@ -99,6 +98,7 @@ class Expense_Service extends Service {
 			$res = $this->expense_model->getDailyExpense ( $date );
 		}
 		$index = 0;
+		$finalList = array();
 		foreach ( $res as $value ) {
 			$finalList [$value->expensedate] [$index ++] = ($value);
 		}
