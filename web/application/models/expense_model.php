@@ -37,7 +37,7 @@ class Expense_Model extends MY_Model {
 	
 	public function getCreditCardHistory($itemKey, $fromDate, $toDate){
 		
-		$this->_database->select ( " SUM(amount) amt FROM `dailyexpense` WHERE  paymenttype = ".$itemKey ." AND (`expensedate` > \"".$fromDate. "\" AND `expensedate` < \"".$toDate."\" )");
+		$this->_database->select ( " SUM(amount) amt FROM `dailyexpense` WHERE  paymenttype = ".$itemKey ." AND (`expensedate` >= \"".$fromDate. "\" AND `expensedate` <= \"".$toDate."\" )");
 		
 		return $this->_database->get ()
 		->result ();
@@ -60,7 +60,7 @@ class Expense_Model extends MY_Model {
 
 	public function getExpenseOnCategory($fromDate, $toDate) {
 
-		$this->_database->select ( " category, SUM(amount) amt FROM `dailyexpense` WHERE `expensedate` > \"".$fromDate. "\" AND `expensedate` < \"".$toDate."\" GROUP BY `category`" );
+		$this->_database->select ( " category, SUM(amount) amt FROM `dailyexpense` WHERE `expensedate` >= \"".$fromDate. "\" AND `expensedate` <= \"".$toDate."\" GROUP BY `category`" );
 		
 		return $this->_database->get ()
 			->result ();
