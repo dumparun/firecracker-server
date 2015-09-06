@@ -11,6 +11,8 @@ class Reminder extends Entity {
 	public $item;
 
 	public $reminder;
+	
+	public $paid;
 
 	public function __construct($entity = false) {
 

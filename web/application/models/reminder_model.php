@@ -35,6 +35,29 @@ class Reminder_Model extends MY_Model {
 	
 	}
 
+	public function updatePayment($seq) {
+
+		$data = array (
+				
+				'paid' => 1 
+		);
+		
+		return parent::update ( $seq, $data );
+	
+	}
+
+	public function resetReminders() {
+
+		$data = array (
+				
+				'paid' => 0 
+		);
+		
+		$this->_database->set ( $data )
+			->update ( $this->_table );
+	
+	}
+
 	public function updatePlan($seq, $category, $amount) {
 
 		$data = array (

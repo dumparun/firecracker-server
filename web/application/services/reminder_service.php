@@ -23,6 +23,18 @@ class Reminder_Service extends Service {
 	
 	}
 
+	public function updatePayment($seq) {
+
+		return $this->reminder_model->updatePayment ( $seq );
+	
+	}
+
+	public function resetReminders() {
+
+		return $this->reminder_model->resetReminders ();
+	
+	}
+
 	public function updateReminder($reminders) {
 
 		$allItems = array (

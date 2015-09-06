@@ -145,16 +145,16 @@ class Expense extends REST_Controller {
 
 	function updateReminder_post() {
 
-		
+	
 	}
-	
+
 	function addReminder_post() {
-	
-		$reminder = new Reminder();
-		$reminder->item = $this->post ('item');
-		$reminder->reminder = $this->post ('reminder');
+
+		$reminder = new Reminder ();
+		$reminder->item = $this->post ( 'item' );
+		$reminder->reminder = $this->post ( 'reminder' );
 		
-		$status = $this->reminder_service->addReminder ($reminder);
+		$status = $this->reminder_service->addReminder ( $reminder );
 		$response = new ExpenseResponse ( false );
 		
 		if ($status > 0)
@@ -165,6 +165,7 @@ class Expense extends REST_Controller {
 		$response->status = $status;
 		
 		$this->response ( $response );
+	
 	}
 
 	function getReminder_post() {
@@ -181,6 +182,36 @@ class Expense extends REST_Controller {
 		$response->status = $status;
 		
 		$response->listOfExpenses = $reminder;
+		
+		$this->response ( $response );
+	
+	}
+
+	function updatePayment_post() {
+
+		$seq = $this->post ( 'itemId' );
+		
+		$reminder = $this->reminder_service->updatePayment ($seq);
+		
+		$response = new ExpenseList ( false );
+		
+		$status = new ResponseStatus ( 0, "Reminder updated" );
+		
+		$response->status = $status;
+		
+		$this->response ( $response );
+	
+	}
+
+	function resetReminders_post() {
+
+		$response = new ExpenseList ( false );
+		
+		$this->reminder_service->resetReminders ();
+		
+		$status = new ResponseStatus ( 0, "Reminders updated" );
+		
+		$response->status = $status;
 		
 		$this->response ( $response );
 	
