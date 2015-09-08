@@ -95,6 +95,25 @@ class Expense extends REST_Controller {
 	
 	}
 
+	function getCardStatusView_post() {
+	
+		$planview = $this->plan_service->getCardStatusView (  );
+	
+		$response = new ExpenseList ( false );
+	
+		if (sizeof ( $planview ) > 0)
+			$status = new ResponseStatus ( 0, "Plan Retrieved" );
+		else
+			$status = new ResponseStatus ( 103, "Too Bad, when its already bad" );
+	
+		$response->status = $status;
+	
+		$response->listOfExpenses = $planview;
+	
+		$this->response ( $response );
+	
+	}
+	
 	function updatePlan_post() {
 
 		$plan = $this->post ( "planList" );

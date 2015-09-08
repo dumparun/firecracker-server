@@ -78,7 +78,8 @@ class Plan_Service extends Service {
 		
 		if ($past == 'true') {
 			$currentMonth = date ( 'm' ) - 1;
-			$creditCardExpense = $this->getLastMonthCreditCardExpense ();
+			$totals = $this->getLastMonthCreditCardExpense (false);
+			$creditCardExpense = $totals ['total'];
 		}
 		
 		$fromDate = $currentYear . '-' . $currentMonth . '-01';
@@ -96,9 +97,9 @@ class Plan_Service extends Service {
 				$key = array_keys ( $allCategory, $value->category );
 				if ($cat->category == $key [0]) {
 					if ($past == 'true' && $key [0] == '1') {
-						$newList->expenditure = $creditCardExpense;
+						$newList->expenditure = floatval ( $creditCardExpense );
 					} else {
-						$newList->expenditure = $cat->amt;
+						$newList->expenditure = floatval ( $cat->amt );
 					}
 					
 					break;
@@ -114,9 +115,39 @@ class Plan_Service extends Service {
 	
 	}
 
-	public function getLastMonthCreditCardExpense() {
+	public function getCardStatusView() {
 
-		$currentMonth = date ( 'm' );
+		$paymentType = array (
+				'1' => 'CASH',
+				'2' => 'Amex',
+				'3' => 'BOA',
+				'4' => 'CITI',
+				'5' => 'US Bank',
+				'6' => 'CapitalOne',
+				'total' => 'Total'
+		);
+		
+		$list = $this->getLastMonthCreditCardExpense (true);
+		
+		$finalList = array ();
+		foreach ( $list as $itemKey => $itemVal ) {
+			$val = $paymentType[$itemKey];
+			$finalList [$val] = $itemVal;
+		}
+		
+		return $finalList;
+	
+	}
+
+	public function getLastMonthCreditCardExpense($current) {
+
+		if($current){
+			$lastMonth = date ( 'm' ) - 1;
+			$currentMonth = date ( 'm' );
+		}else{
+			$lastMonth = date ( 'm' ) - 2;
+			$currentMonth = date ( 'm' ) - 1;
+		}
 		$currentYear = date ( 'Y' );
 		
 		$data = array (
@@ -127,18 +158,19 @@ class Plan_Service extends Service {
 				'6' => '15' 
 		);
 		$cardTotal = 0;
-		
+		$finalList = array ();
 		foreach ( $data as $itemKey => $itemVal ) {
 			
-			$fromDate = $currentYear . '-' . $currentMonth - 1 . '-' . $itemVal;
+			$fromDate = $currentYear . '-' . $lastMonth . '-' . $itemVal;
 			$toDate = $currentYear . '-' . $currentMonth . '-' . $itemVal;
-			
 			$res = $this->expense_model->getCreditCardHistory ( $itemKey, $fromDate, $toDate );
-			$cardTotal += $res [0]->amt;
+			$finalList [$itemKey] = floatval($res [0]->amt);
+			$cardTotal += floatval($res [0]->amt);
 		
 		}
 		
-		return $cardTotal;
+		$finalList ['total'] = $cardTotal;
+		return $finalList;
 	
 	}
 
